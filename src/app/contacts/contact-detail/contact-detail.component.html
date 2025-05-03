@@ -1,0 +1,12 @@
+<div class="panel panel-info">
+    <div class="panel-heading">
+      {{ contact.name }}
+      <a class="btn btn-warning btn-sm pull-right" href="#">Edit</a>
+      <a class="btn btn-danger btn-sm pull-right" style="margin-right: 5px;" href="#">Delete</a>
+    </div>
+    <div class="panel-body">
+      <img [src]="contact.imageUrl" alt="{{contact.name}}" class="img-thumbnail" width="150">
+      <p><strong>Email:</strong> {{ contact.email }}</p>
+      <p><strong>Phone:</strong> {{ contact.phone }}</p>
+    </div>
+  </div>
