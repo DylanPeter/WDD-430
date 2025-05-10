@@ -1,16 +1,13 @@
 <div class="panel panel-primary">
-    <div class="panel-heading">
-      Contacts
-      <a class="btn btn-success btn-sm pull-right" href="#">New Contact</a>
-    </div>
-    <div class="panel-body">
-      <div class="media" *ngFor="let contact of contacts">
-        <div class="media-left">
-          <img [src]="contact.imageUrl" alt="{{contact.name}}" class="media-object" width="60">
-        </div>
-        <div class="media-body">
-          <h4 class="media-heading">{{ contact.name }}</h4>
-        </div>
-      </div>
-    </div>
+  <div class="panel-heading">
+    Contacts
+    <a class="btn btn-success btn-sm pull-right" href="#">New Contact</a>
   </div>
+  <div class="panel-body">
+    <cms-contact-item
+      *ngFor="let contact of contacts"
+      [contact]="contact"
+      (click)="onSelected(contact)">
+    </cms-contact-item>
+  </div>
+</div>
