@@ -1,15 +1,18 @@
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="#">WeLearn CMS</a>
     </div>
+
     <ul class="nav navbar-nav">
-      <li class="dropdown" appDropdown>
-        <a class="dropdown-toggle" href="#">User <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a href="#">Settings</a></li>
-          <li><a href="#">Log Out</a></li>
-        </ul>
+      <li routerLinkActive="active">
+        <a [routerLink]="['/documents']">Documents</a>
+      </li>
+      <li routerLinkActive="active">
+        <a [routerLink]="['/messages']">Messages</a>
+      </li>
+      <li routerLinkActive="active">
+        <a [routerLink]="['/contacts']">Contacts</a>
       </li>
     </ul>
   </div>

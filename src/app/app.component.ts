@@ -1,27 +1,13 @@
 import { Component } from '@angular/core';
-import { HeaderComponent } from './header.component';
-import { ContactsComponent } from './contacts/contacts.component';
-import { DocumentsComponent } from './documents/document-component/documents.component';
-import { MessageListComponent } from './messages/message-list/message-list.component';
-import { NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router'; // ✅ Add this
+import { HeaderComponent } from './header.component'; // Adjust path if needed
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    HeaderComponent,
-    ContactsComponent,
-    DocumentsComponent,
-    MessageListComponent,
-    NgIf
-  ],
+  imports: [CommonModule, RouterModule, HeaderComponent], // ✅ Add it here
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrl: './app.component.css',
 })
-export class AppComponent {
-  selectedFeature: string = 'documents'; // Default view
-
-  switchView(selectedFeature: string) {
-    this.selectedFeature = selectedFeature;
-  }
-}
+export class AppComponent {}

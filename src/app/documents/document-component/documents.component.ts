@@ -1,16 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { DocumentListComponent } from '../document-list/document-list.component';
 import { DocumentDetailComponent } from '../document-detail/document-detail.component';
 import { Document } from '../document.model';
-import { NgIf } from '@angular/common';
+import { DocumentService } from '../document.service';
+
 
 @Component({
   selector: 'cms-documents',
   standalone: true,
-  imports: [DocumentListComponent, DocumentDetailComponent, NgIf],
+  imports: [CommonModule, DocumentListComponent, DocumentDetailComponent],
   templateUrl: './documents.component.html',
-  styleUrls: ['./documents.component.css']
 })
-export class DocumentsComponent {
-  selectedDocument!: Document;
+export class DocumentsComponent implements OnInit {
+  selectedDocument: Document | null = null;
+
+  constructor(private documentService: DocumentService) {}
+
+  ngOnInit(): void {
+    this.documentService.documentSelectedEvent.subscribe((document: Document) => {
+      this.selectedDocument = document;
+    });
+  }
 }

@@ -1,39 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Contact } from '../contact.model';
-import { NgFor } from '@angular/common';
+import { ContactService } from '../contact.service';
 import { ContactItemComponent } from '../contact-item/contact-item.component';
-import { Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'cms-contact-list',
   standalone: true,
-  imports: [NgFor, ContactItemComponent],
+  imports: [CommonModule, ContactItemComponent],
   templateUrl: './contact-list.component.html',
-  styleUrls: ['./contact-list.component.css'],
 })
-export class ContactListComponent {
-  @Output() selectedContactEvent = new EventEmitter<Contact>();
+export class ContactListComponent implements OnInit {
+  contacts: Contact[] = [];
 
-  onSelected(contact: Contact) {
-    this.selectedContactEvent.emit(contact);
+  constructor(private contactService: ContactService) {}
+
+  ngOnInit(): void {
+    this.contacts = this.contactService.getContacts();
   }
-
-  contacts: Contact[] = [
-    new Contact(
-      '1',
-      'R. Kent Jackson',
-      'jacksonk@byui.edu',
-      '208-496-3771',
-      'images/jacksonk.jpg',
-      null
-    ),
-    new Contact(
-      '2',
-      'Rex Barzee',
-      'barzeer@byui.edu',
-      '208-496-3768',
-      'images/barzeer.jpg',
-      null
-    ),
-  ];
 }

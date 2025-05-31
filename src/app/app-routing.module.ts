@@ -1,11 +1,19 @@
-import { Routes } from '@angular/router';
-import { DocumentsComponent } from './documents/document-component/documents.component';
-import { ContactsComponent } from './contacts/contacts.component';
-import { MessageListComponent } from './messages/message-list/message-list.component';
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
 
-export const routes: Routes = [
+import { DocumentsComponent } from './documents/document-component/documents.component';
+import { MessageListComponent } from './messages/message-list/message-list.component';
+import { ContactsComponent } from './contacts/contacts.component';
+
+const appRoutes: Routes = [
   { path: '', redirectTo: '/documents', pathMatch: 'full' },
   { path: 'documents', component: DocumentsComponent },
   { path: 'messages', component: MessageListComponent },
   { path: 'contacts', component: ContactsComponent }
 ];
+
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule {}
