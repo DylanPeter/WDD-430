@@ -1,8 +1,6 @@
-<a class="list-group-item clearfix">
-    <div class="media-left">
-      <img [src]="contact.imageUrl" alt="{{contact.name}}" class="media-object" width="60">
-    </div>
-    <div class="media-body">
-      <h4 class="media-heading">{{ contact.name }}</h4>
-    </div>
-  </a>
+<a [routerLink]="[contact.id]" routerLinkActive="active" class="list-group-item clearfix">
+  <div class="pull-left">
+    <h4 class="list-group-item-heading">{{ contact.name }}</h4>
+    <p class="list-group-item-text">{{ contact.email }}</p>
+  </div>
+</a>

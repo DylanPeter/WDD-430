@@ -1,11 +1,14 @@
-<div class="panel panel-primary">
-  <div class="panel-heading">
-    Contacts
-    <a class="btn btn-success btn-sm pull-right" href="#">New Contact</a>
+<div class="row">
+  <div class="col-xs-12">
+    <a [routerLink]="['new']" class="btn btn-primary">New Contact</a>
   </div>
-  <div class="panel-body">
-    <div class="center-panel">
-      <cms-contact-item *ngFor="let contact of contacts" [contact]="contact"></cms-contact-item>
-    </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12 center-panel">
+    <cms-contact-item 
+      *ngFor="let contact of contacts"
+      [contact]="contact">
+    </cms-contact-item>
   </div>
 </div>

@@ -1,12 +1,14 @@
-<div class="panel panel-info">
-    <div class="panel-heading">
-      {{ contact.name }}
-      <a class="btn btn-warning btn-sm pull-right" href="#">Edit</a>
-      <a class="btn btn-danger btn-sm pull-right" style="margin-right: 5px;" href="#">Delete</a>
-    </div>
-    <div class="panel-body">
-      <img [src]="contact.imageUrl" alt="{{contact.name}}" class="img-thumbnail" width="150">
-      <p><strong>Email:</strong> </p>
-      <p><strong>Phone:</strong> </p>
-    </div>
+<div class="row">
+  <div class="col-xs-12">
+    <h2>{{ contact?.name }}</h2>
+    <p>{{ contact?.email }}</p>
+    <p>{{ contact?.phone }}</p>
   </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+    <a [routerLink]="['edit']" class="btn btn-primary">Edit</a>
+    <a (click)="onDelete()" class="btn btn-danger">Delete</a>
+  </div>
+</div>

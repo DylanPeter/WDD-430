@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { Contact } from '../contact.model';
 import { ContactService } from '../contact.service';
 import { ContactItemComponent } from '../contact-item/contact-item.component';
@@ -7,7 +8,7 @@ import { ContactItemComponent } from '../contact-item/contact-item.component';
 @Component({
   selector: 'cms-contact-list',
   standalone: true,
-  imports: [CommonModule, ContactItemComponent],
+  imports: [CommonModule, RouterModule, ContactItemComponent],
   templateUrl: './contact-list.component.html',
 })
 export class ContactListComponent implements OnInit {
@@ -15,7 +16,11 @@ export class ContactListComponent implements OnInit {
 
   constructor(private contactService: ContactService) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.contacts = this.contactService.getContacts();
+  
+    this.contactService.contactChangedEvent.subscribe((contacts: Contact[]) => {
+      this.contacts = contacts;
+    });
   }
 }
