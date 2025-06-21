@@ -1,43 +1,74 @@
-import { Injectable, EventEmitter } from '@angular/core';
-import { Contact } from './contact.model';  // Adjust path if needed
-import { MOCKCONTACTS } from './MOCKCONTACTS';  // Adjust path if needed
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+import { Contact } from './contact.model';
+import { MOCKCONTACTS } from './MOCKCONTACTS';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContactService {
   contacts: Contact[] = [];
-  contactChangedEvent = new EventEmitter<Contact[]>();  // ✅ Emitter to notify list updates
-  contactSelectedEvent = new EventEmitter<Contact>();
+  contactListChangedEvent = new Subject<Contact[]>();
+  maxContactId: number = 0;
 
   constructor() {
     this.contacts = MOCKCONTACTS;
+    this.maxContactId = this.getMaxId();
   }
 
-  getContacts(): Contact[] {
-    return this.contacts.slice();
-  }
-
-  getContact(id: string): Contact | null {
+  getMaxId(): number {
+    let maxId = 0;
     for (let contact of this.contacts) {
-      if (contact.id === id) {
-        return contact;
+      const currentId = parseInt(contact.id, 10);
+      if (currentId > maxId) {
+        maxId = currentId;
       }
     }
-    return null;
+    return maxId;
   }
 
-  deleteContact(contact: Contact): void {
+  addContact(newContact: Contact) {
+    if (!newContact) {
+      return;
+    }
+    this.maxContactId++;
+    newContact.id = this.maxContactId.toString();
+    this.contacts.push(newContact);
+    this.contactListChangedEvent.next(this.contacts.slice());
+  }
+
+  updateContact(originalContact: Contact, newContact: Contact) {
+    if (!originalContact || !newContact) {
+      return;
+    }
+    const pos = this.contacts.indexOf(originalContact);
+    if (pos < 0) {
+      return;
+    }
+    newContact.id = originalContact.id;
+    this.contacts[pos] = newContact;
+    this.contactListChangedEvent.next(this.contacts.slice());
+  }
+
+  deleteContact(contact: Contact) {
     if (!contact) {
       return;
     }
-
     const pos = this.contacts.indexOf(contact);
     if (pos < 0) {
       return;
     }
-
     this.contacts.splice(pos, 1);
-    this.contactChangedEvent.emit(this.contacts.slice());  // ✅ Notify subscribers
+    this.contactListChangedEvent.next(this.contacts.slice());
   }
+
+ getContact(id: string): Contact | null {
+  return this.contacts.find(contact => contact.id === id) || null;
+  
+}  
+getContacts(): Contact[] {
+  return this.contacts.slice();
+}
+
+
 }

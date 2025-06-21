@@ -4,7 +4,6 @@ import { Message } from '../message.model';
 
 @Component({
   selector: 'cms-message-edit',
-  standalone: true,
   templateUrl: './message-edit.component.html',
 })
 export class MessageEditComponent {

@@ -1,32 +1,31 @@
-import { Component } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Contact } from '../contact.model';
 import { ContactService } from '../contact.service';
-import { Contact } from '../contact.model';  // Adjust the path + model if needed
 
 @Component({
   selector: 'cms-contact-detail',
-  standalone: true,
   templateUrl: './contact-detail.component.html',
-  styleUrls: ['./contact-detail.component.css'],
-  imports: [
-    CommonModule,
-    RouterModule
-  ]
+  styleUrls: ['./contact-detail.component.css']
 })
-export class ContactDetailComponent {
-  contact!: Contact;  // Assuming Contact is your model, adjust as needed
+export class ContactDetailComponent implements OnInit {
+  contact: Contact | null = null;
 
   constructor(
-    private contactService: ContactService,
-    private router: Router
+    private route: ActivatedRoute,
+    private router: Router,
+    private contactService: ContactService
   ) {}
 
-  onDelete() {
-    if (!this.contact) {
-      return;
+  ngOnInit(): void {
+    const id = this.route.snapshot.params['id'];
+    this.contact = this.contactService.getContact(id);
+  }
+
+  onDelete(): void {
+    if (this.contact) {
+      this.contactService.deleteContact(this.contact);
+      this.router.navigate(['/contacts']);
     }
-    this.contactService.deleteContact(this.contact);
-    this.router.navigate(['/contacts']);
   }
 }

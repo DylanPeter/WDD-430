@@ -5,7 +5,6 @@ import { Contact } from '../../contacts/contact.model';
 
 @Component({
   selector: 'cms-message-item',
-  standalone: true,
   templateUrl: './message-item.component.html',
 })
 export class MessageItemComponent implements OnInit {

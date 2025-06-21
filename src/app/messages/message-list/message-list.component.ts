@@ -8,7 +8,6 @@ import { MessageEditComponent } from '../message-edit/message-edit.component';
 
 @Component({
   selector: 'cms-message-list',
-  standalone: true,
   imports: [CommonModule, MessageItemComponent, MessageEditComponent], // add it here
   templateUrl: './message-list.component.html',
 })
