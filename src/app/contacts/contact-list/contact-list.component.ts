@@ -1,8 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+
+import { ContactItemComponent } from '../contact-item/contact-item.component';
+import { ContactService } from '../contact.service';
+import { Contact } from '../contact.model';
 
 @Component({
   selector: 'cms-contact-list',
+  standalone: true,
+  imports: [CommonModule, RouterModule, ContactItemComponent],
   templateUrl: './contact-list.component.html',
   styleUrls: ['./contact-list.component.css']
 })
-export class ContactListComponent { }
+export class ContactListComponent implements OnInit {
+  contacts: Contact[] = [];
+
+  constructor(private contactService: ContactService) {}
+
+  ngOnInit(): void {
+    this.contacts = this.contactService.getContacts();
+  }
+}

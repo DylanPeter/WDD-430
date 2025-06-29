@@ -29,8 +29,9 @@
         <div class="row">
           <div class="col-xs-12">
             <input #messageInput type="text" class="form-control" placeholder="Enter your message">
-            <button class="btn btn-success" type="button" (click)="onSendMessage(messageInput.value)">Send</button>
-            <button class="btn btn-danger" type="button" (click)="onClear(messageInput)">Clear</button>
+            <!-- If you're using template reference -->
+            <button type="button" (click)="onSendMessage()">Send</button>
+            <button type="button" (click)="onClear()">Clear</button>
           </div>
         </div>
       </form>

@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { HeaderComponent } from './header/header.component';  // ✅ import HeaderComponent
+import { HeaderComponent } from './header/header.component';
 
 @Component({
   selector: 'cms-root',
-  imports: [RouterModule, HeaderComponent],  // ✅ add HeaderComponent here
+  standalone: true,
+  imports: [RouterModule, HeaderComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

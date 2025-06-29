@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';  
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'cms-header',
-  imports: [RouterModule],  
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })

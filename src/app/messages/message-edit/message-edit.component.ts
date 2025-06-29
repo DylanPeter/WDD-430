@@ -1,31 +1,36 @@
 import { Component } from '@angular/core';
-import { MessageService } from '../message.service';
-import { Message } from '../message.model';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'cms-message-edit',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './message-edit.component.html',
+  styleUrls: ['./message-edit.component.css']
 })
 export class MessageEditComponent {
-  currentSenderId = '1';
+  subject: string = '';
+  msgText: string = '';
 
-  constructor(private messageService: MessageService) {}
+  constructor() {}
 
-  onSendMessage(value: string) {
-    if (!value) return;
-  
-    const newMessage = new Message(
-      (Math.random() * 10000).toFixed(0),
-      'New Message',
-      value,
-      this.currentSenderId
-    );
-  
-    this.messageService.addMessage(newMessage);
+  onSendMessage() {
+    const newMessage = {
+      subject: this.subject,
+      msgText: this.msgText,
+      sender: '1' // static for now; could be set from user context
+    };
+
+    console.log('Message sent:', newMessage);
+
+    // Clear the fields after sending
+    this.subject = '';
+    this.msgText = '';
   }
-  
-  onClear(input: HTMLInputElement) {
-    input.value = '';
+
+  onClear() {
+    this.subject = '';
+    this.msgText = '';
   }
-  }
-  
+}
