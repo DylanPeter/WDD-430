@@ -1,35 +1,56 @@
 <form #f="ngForm" (ngSubmit)="onSubmit(f)">
-    <div class="form-group">
-      <label for="name">Name</label>
-      <input 
-        type="text"
-        id="name"
-        class="form-control"
-        name="name"
-        required
-        [(ngModel)]="document.name">
-    </div>
-  
-    <div class="form-group">
-      <label for="description">Description</label>
-      <input 
-        type="text"
-        id="description"
-        class="form-control"
-        name="description"
-        [(ngModel)]="document.description">
-    </div>
-  
-    <div class="form-group">
-      <label for="url">URL</label>
-      <input 
-        type="text"
-        id="url"
-        class="form-control"
-        name="url"
-        [(ngModel)]="document.url">
-    </div>
-  
-    <button type="submit" class="btn btn-success">Save</button>
-    <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
-  </form>
+  <div class="form-group">
+    <label for="name">Document Title</label>
+    <input 
+      type="text" 
+      id="name" 
+      class="form-control" 
+      name="name" 
+      required 
+      [(ngModel)]="document.name" 
+      #name="ngModel">
+  </div>
+
+  <div class="form-group">
+    <label for="url">Document URL</label>
+    <input 
+      type="text" 
+      id="url" 
+      class="form-control" 
+      name="url" 
+      required 
+      [(ngModel)]="document.url" 
+      #url="ngModel">
+  </div>
+
+  <div class="form-group">
+    <label for="description">Description</label>
+    <input 
+      type="text" 
+      id="description" 
+      class="form-control" 
+      name="description" 
+      [(ngModel)]="document.description">
+  </div>
+
+  <div 
+    *ngIf="(name?.invalid && name?.touched) || (url?.invalid && url?.touched)" 
+    class="alert alert-danger">
+    The Document Title and Document URL are required fields.
+  </div>
+
+  <div class="form-group mt-3">
+    <button 
+      type="submit" 
+      class="btn btn-success" 
+      [disabled]="f.invalid">
+      Save
+    </button>
+    <button 
+      type="button" 
+      class="btn btn-secondary ms-2" 
+      (click)="onCancel()">
+      Cancel
+    </button>
+  </div>
+</form>

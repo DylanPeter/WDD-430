@@ -1,21 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
-
 import { Contact } from '../contact.model';
 import { ContactService } from '../contact.service';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ContactItemComponent } from '../contact-item/contact-item.component';
+
+
 
 @Component({
   selector: 'cms-contact-edit',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, FormsModule, DragDropModule, ContactItemComponent],
   templateUrl: './contact-edit.component.html',
   styleUrls: ['./contact-edit.component.css']
 })
-export class ContactEditComponent {
-  contact: Contact = new Contact('', '', '', '', '', null);  private editMode = false;
-  private contactId: string | null = null;
+export class ContactEditComponent implements OnInit {
+  originalContact: Contact | null = null;
+  contact: Contact = new Contact('', '', '', '', '', []);
+  groupContacts: Contact[] = [];
+  editMode = false;
+  id: string = '';
 
   constructor(
     private contactService: ContactService,
@@ -24,38 +31,75 @@ export class ContactEditComponent {
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.contactId = params['id'];
-      this.editMode = !!this.contactId;
+    this.route.params.subscribe((params: Params) => {
+      this.id = params['id'];
+      if (!this.id) {
+        this.editMode = false;
+        return;
+      }
 
-      if (this.editMode && this.contactId) {
-        const existingContact = this.contactService.getContact(this.contactId);
-        if (existingContact) {
-          this.contact = JSON.parse(JSON.stringify(existingContact)); // Deep copy
-        }
+      const fetched = this.contactService.getContact(this.id);
+      if (!fetched) {
+        return;
+      }
+
+      this.originalContact = fetched;
+      this.editMode = true;
+      this.contact = JSON.parse(JSON.stringify(this.originalContact));
+
+      if (this.originalContact.group) {
+        this.groupContacts = JSON.parse(JSON.stringify(this.originalContact.group));
       }
     });
   }
 
   onSubmit(form: NgForm) {
-    const updatedContact = new Contact(
-      this.contact.id,
-      form.value.name,
-      form.value.email,
-      form.value.phone,
-      form.value.imageUrl,
-      null
+    const value = form.value;
+    const newContact = new Contact(
+      value.id ?? '', // fallback if missing
+      value.name,
+      value.email,
+      value.phone,
+      value.imageUrl,
+      this.groupContacts
     );
 
-    if (this.editMode) {
-      this.contactService.updateContact(this.contact, updatedContact);
+    if (this.editMode && this.originalContact) {
+      this.contactService.updateContact(this.originalContact, newContact);
     } else {
-      this.contactService.addContact(updatedContact);
+      this.contactService.addContact(newContact);
     }
+
     this.router.navigate(['/contacts']);
   }
 
   onCancel() {
     this.router.navigate(['/contacts']);
+  }
+
+  onDrop(event: CdkDragDrop<any>) {
+    const selectedContact = event.item.data;
+    const invalidGroupContact = this.isInvalidContact(selectedContact);
+    if (invalidGroupContact) return;
+
+    this.groupContacts.push(selectedContact);
+  }
+
+  addToGroup($event: any) {
+    const selectedContact: Contact = $event.dragData;
+    if (this.isInvalidContact(selectedContact)) return;
+    this.groupContacts.push(selectedContact);
+  }
+
+  onRemoveItem(index: number) {
+    if (index >= 0 && index < this.groupContacts.length) {
+      this.groupContacts.splice(index, 1);
+    }
+  }
+
+  isInvalidContact(newContact: Contact): boolean {
+    if (!newContact) return true;
+    if (this.contact && newContact.id === this.contact.id) return true;
+    return this.groupContacts.some(c => newContact.id === c.id);
   }
 }

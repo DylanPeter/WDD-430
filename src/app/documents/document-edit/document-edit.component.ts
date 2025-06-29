@@ -1,61 +1,69 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, ActivatedRoute, Params, RouterModule } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Document } from '../document.model';
 import { DocumentService } from '../document.service';
 
 @Component({
   selector: 'cms-document-edit',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './document-edit.component.html',
   styleUrls: ['./document-edit.component.css']
 })
-export class DocumentEditComponent {
-  document: Document = new Document('', '', '', '', null);
-  editMode = false;
-  private documentId: string | null = null;
+export class DocumentEditComponent implements OnInit {
+  originalDocument: Document | null = null;
+  document: Document = new Document('', '', '', '', []);
+  editMode: boolean = false;
+  id: string = '';
 
   constructor(
-    private docService: DocumentService,
-    private route: ActivatedRoute,
-    private router: Router
+    private documentService: DocumentService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.documentId = params['id'];
-      this.editMode = !!this.documentId;
-
-      if (this.editMode && this.documentId) {
-        const existingDoc = this.docService.getDocument(this.documentId);
-        if (existingDoc) {
-          this.document = JSON.parse(JSON.stringify(existingDoc));
-        }
+    this.route.params.subscribe((params: Params) => {
+      this.id = params['id'];
+      if (!this.id) {
+        this.editMode = false;
+        return;
       }
+
+      const original = this.documentService.getDocument(this.id);
+      if (!original) {
+        return;
+      }
+
+      this.originalDocument = original;
+      this.editMode = true;
+      this.document = JSON.parse(JSON.stringify(original));
     });
   }
 
-  onSubmit(form: NgForm) {
-    const updatedDoc = new Document(
-      this.document.id,
-      form.value.name,
-      form.value.description,
-      form.value.url,
-      null
+  onSubmit(form: NgForm): void {
+    const value = form.value;
+
+    const newDocument = new Document(
+      value.id ?? '', // fallback in case id isn't bound in form
+      value.name,
+      value.description,
+      value.url,
+      [] // children
     );
 
-    if (this.editMode) {
-      this.docService.updateDocument(this.document, updatedDoc);
+    if (this.editMode && this.originalDocument) {
+      this.documentService.updateDocument(this.originalDocument, newDocument);
     } else {
-      this.docService.addDocument(updatedDoc);
+      this.documentService.addDocument(newDocument);
     }
 
     this.router.navigate(['/documents']);
   }
 
-  onCancel() {
+  onCancel(): void {
     this.router.navigate(['/documents']);
   }
 }

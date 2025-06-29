@@ -1,0 +1,20 @@
+/* document-edit.component.css */
+
+form {
+    margin: 20px 0;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  input.ng-invalid.ng-touched {
+    border: 1px solid red;
+    background-color: #f8d7da;
+  }
+  
+  .alert {
+    margin-top: 15px;
+    padding: 10px;
+    font-size: 14px;
+  }

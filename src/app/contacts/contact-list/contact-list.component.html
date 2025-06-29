@@ -4,11 +4,12 @@
   </div>
 </div>
 
-<div class="row">
-  <div class="col-xs-12 center-panel">
-    <cms-contact-item 
-      *ngFor="let contact of contacts"
-      [contact]="contact">
-    </cms-contact-item>
-  </div>
+<div
+  *ngFor="let contact of contacts"
+  cdkDrag
+  [cdkDragData]="contact"
+  class="contact-draggable">
+</div>
+<div *ngFor="let contact of contacts" cdkDrag [cdkDragData]="contact">
+  <cms-contact-item [contact]="contact"></cms-contact-item>
 </div>
