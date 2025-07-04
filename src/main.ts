@@ -5,13 +5,10 @@ import { routes } from './app/app-routing.module';
 import { importProvidersFrom } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { provideHttpClient } from '@angular/common/http';
+
+
 
 bootstrapApplication(AppComponent, {
-  providers: [
-    provideRouter(routes),
-    importProvidersFrom(
-      BrowserAnimationsModule,
-      DragDropModule
-    )
-  ]
+  providers: [provideHttpClient(), provideRouter(routes)]
 });
