@@ -1,76 +1,74 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Document } from './document.model';
-import { MOCKDOCUMENTS } from './MOCKDOCUMENTS';
+import { Subject } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class DocumentService {
-  documents: Document[] = [];
-  documentListChangedEvent = new Subject<Document[]>();
-  maxDocumentId: number = 0;
+  private documents: Document[] = [];
+  documentChangedEvent = new Subject<Document[]>();
+  private baseUrl = 'http://localhost:3000/documents';
 
-  constructor() {
-    this.documents = MOCKDOCUMENTS;
-    this.maxDocumentId = this.getMaxId();
+  constructor(private http: HttpClient) {}
+
+  getDocuments(): void {
+    this.http.get<{ message: string; documents: Document[] }>(this.baseUrl)
+      .subscribe({
+        next: (res) => {
+          this.documents = res.documents;
+          this.documentChangedEvent.next(this.documents.slice());
+        },
+        error: err => console.error('GET /documents error', err)
+      });
   }
 
-  getMaxId(): number {
-    let maxId = 0;
-    for (let doc of this.documents) {
-      const currentId = parseInt(doc.id, 10);
-      if (currentId > maxId) {
-        maxId = currentId;
-      }
-    }
-    return maxId;
+  getDocument(id: string) {
+    return this.http.get<{ message: string; document: Document }>(
+      `${this.baseUrl}/${id}`
+    );
   }
 
-  addDocument(newDocument: Document) {
-    if (!newDocument) {
-      return;
-    }
-    this.maxDocumentId++;
-    newDocument.id = this.maxDocumentId.toString();
-    this.documents.push(newDocument);
-    this.documentListChangedEvent.next(this.documents.slice());
+  addDocument(newDoc: Document) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    this.http.post<{ message: string; document: Document }>(
+      this.baseUrl,
+      newDoc,
+      { headers }
+    ).subscribe({
+      next: res => {
+        this.documents.push(res.document);
+        this.documentChangedEvent.next(this.documents.slice());
+      },
+      error: err => console.error('POST /documents error', err)
+    });
   }
 
-  updateDocument(originalDocument: Document, newDocument: Document) {
-    if (!originalDocument || !newDocument) {
-      return;
-    }
-    const pos = this.documents.indexOf(originalDocument);
-    if (pos < 0) {
-      return;
-    }
-    newDocument.id = originalDocument.id;
-    this.documents[pos] = newDocument;
-    this.documentListChangedEvent.next(this.documents.slice());
+  updateDocument(original: Document, updated: Document) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    this.http.put(
+      `${this.baseUrl}/${original.id}`,
+      updated,
+      { headers }
+    ).subscribe({
+      next: () => {
+        const pos = this.documents.findIndex(d => d.id === original.id);
+        this.documents[pos] = updated;
+        this.documentChangedEvent.next(this.documents.slice());
+      },
+      error: err => console.error('PUT /documents error', err)
+    });
   }
 
   deleteDocument(document: Document) {
-    if (!document) {
-      return;
-    }
-    const pos = this.documents.indexOf(document);
-    if (pos < 0) {
-      return;
-    }
-    this.documents.splice(pos, 1);
-    this.documentListChangedEvent.next(this.documents.slice());
-  }
-
-  getDocuments(): Document[] {
-    return this.documents.slice();
-  }
-  getDocument(id: string): Document | null {
-    for (let document of this.documents) {
-      if (document.id === id) {
-        return document;
-      }
-    }
-    return null;
+    this.http.delete(`${this.baseUrl}/${document.id}`)
+      .subscribe({
+        next: () => {
+          this.documents = this.documents.filter(d => d.id !== document.id);
+          this.documentChangedEvent.next(this.documents.slice());
+        },
+        error: err => console.error('DELETE /documents error', err)
+      });
   }
 }

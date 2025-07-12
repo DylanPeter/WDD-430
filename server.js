@@ -37,7 +37,7 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, 'dist/cms/browser')));
 
 // Routes
-app.use('/', index); // ✅ use once
+app.use('/', index); 
 app.use('/documents', documentRoutes);
 app.use('/messages', messageRoutes);
 app.use('/contacts', contactRoutes);
